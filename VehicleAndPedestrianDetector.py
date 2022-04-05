@@ -1,7 +1,6 @@
 import cv2 
 
 # Load some pre-trained data on vehicles (haar cascade algorithm) to create a classifier
-trainedBikeData = cv2.CascadeClassifier('data/haarcascade_bike.xml')
 trainedBusData = cv2.CascadeClassifier('data/haarcascade_bus.xml')
 trainedCarData = cv2.CascadeClassifier('data/haarcascade_car.xml')
 trainedPedestrianData = cv2.CascadeClassifier('data/haarcascade_pedestrian.xml')
@@ -21,7 +20,7 @@ while True:
   # Detect multiscale will return a array with all vehicles/pedestrians coordinates from image pre loaded
   # For each vehicle/pedestrian it will return an array with x y (top left corner) and width height from x y to reach bottom right corner
   pedestrianCoordinates = trainedPedestrianData.detectMultiScale(grayscaledImage)
-  bikeCoordinates = trainedBikeData.detectMultiScale(grayscaledImage)
+  
   carCoordinates = trainedCarData.detectMultiScale(grayscaledImage)
   busCoordinates = trainedBusData.detectMultiScale(grayscaledImage)
 
@@ -29,25 +28,22 @@ while True:
   for (x, y, w, h) in pedestrianCoordinates:
     # First parameter is the image, the second is the coordinates of the top left corner, then the coordinate x y from bottom right corner
     # then color and last parameter is the thickness of the rectangle
-    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
-    
-  # For each bike, I need to catch every coordinate and draw the retangle in the image
-  for (x, y, w, h) in bikeCoordinates:
-    # First parameter is the image, the second is the coordinates of the top left corner, then the coordinate x y from bottom right corner
-    # then color and last parameter is the thickness of the rectangle
-    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
-    
+    if h in range(65, 81):
+      cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
   # For each car, I need to catch every coordinate and draw the retangle in the image
   for (x, y, w, h) in carCoordinates:
     # First parameter is the image, the second is the coordinates of the top left corner, then the coordinate x y from bottom right corner
     # then color and last parameter is the thickness of the rectangle
-    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+    if w > 65:
+      cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
     
   # For each bus, I need to catch every coordinate and draw the retangle in the image
   for (x, y, w, h) in busCoordinates:
     # First parameter is the image, the second is the coordinates of the top left corner, then the coordinate x y from bottom right corner
     # then color and last parameter is the thickness of the rectangle
-    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+    if w > 65:
+      cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
   # Show my image with detected vehicles and pedestrians
   cv2.imshow('Vehicles/pedestrians detector', frame)
